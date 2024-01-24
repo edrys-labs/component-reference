@@ -9,5 +9,5 @@ It will show you live class data, allows sending and receiving messages, and set
 Simply use this URL to add the module to your class:
 
 ```
-https://edrys-org.github.io/module-reference/
+https://edrys-labs.github.io/module-reference/
 ```
