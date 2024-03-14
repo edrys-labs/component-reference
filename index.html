@@ -127,7 +127,7 @@
             <template x-for="user in edrys.liveClass.users">
                 <details>
                     <summary>
-                        <em x-show="!user.name.includes('@')">Station:</em>
+                        <em x-show="!user.name.startsWith('Station')">Station:</em>
                         <em x-show="user.role == 'teacher'">Teacher:</em>
                         <em x-show="user.role == 'student'">Student:</em>
                         <span x-text="user.displayName"></span>
