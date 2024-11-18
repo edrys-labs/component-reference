@@ -101,25 +101,52 @@
             </div>
 
             <h2>Other Class Data</h2>
+            The state of the room is represented as an
+            <a target="_blank" href="https://docs.yjs.dev/">Yjs</a>
+            <a target="_blank" href="https://docs.yjs.dev/api/shared-types/y.map">Map</a>
+            to which you can add more
+            <a target="_blank" href="https://docs.yjs.dev/api/shared-types">shared data types</a>,
+            which is then synced with all other peers in the room.
+            Each module can only access and modify its own room-state.
+            Additionally you can also access a global
+            <a target="_blank" href="https://docs.yjs.dev/api/about-awareness">awareness</a>
+            object, which can be used to share editor states like cursor positions, selections, etc.
+            <textarea rows="12" id="code">// Add a map and insert two values
+let state = Edrys.getState('name', 'Map')
+
+// These methods performs a transaction, otherwise
+// the onUpdate event would be triggered on every change
+Edrys.updateState(() => {
+    state.set('option', 12)
+    state.set('option2', 13)
+})
+
+// create a sharable awareness state
+let awareness = Edrys.getState("name", "Awareness")
+
+// create a new value, this will return undefined, if this
+// value has not been set before, or return the value itself
+console.log("Get Value =>", Edrys.getState("value", "Value"))
+
+// update or initialize the value directly by passing a new value
+Edrys.getState("value", "Value", 12)
+
+// clear the value
+// Edrys.clearState("id")
+
+// use this to get the entire Map of the room
+let roomState = Edrys.getState()
+console.dir("The Room-State",roomState.toJSON())
+</textarea>
+            <button x-on:click="eval(document.getElementById('code').value)">Eval</button>
             <hr />
             <h3>Live Rooms</h3>
-            <template x-for="room in edrys.liveClass.rooms">
+            <template x-for="[name, data] of Object.entries(edrys.liveClass.rooms)">
                 <details>
-                    <summary x-text="room.name"></summary>
-                    <ul>
-                        <li>
-                            <b>Student State:</b>
-                            <span x-text="room.studentPublicState"></span>
-                        </li>
-                        <li>
-                            <b>Teacher State:</b>
-                            <span x-text="room.teacherPublicState"></span>
-                        </li>
-                        <li x-show="edrys.role == 'teacher'">
-                            <b>Private State:</b>
-                            <span x-text="room.teacherPrivateState"></span>
-                        </li>
-                    </ul>
+                    <summary x-text="name"></summary>
+                        <code>
+                            <pre x-text="JSON.stringify(data, null, 2)"></pre>
+                        </code>
                 </details>
             </template>
 
@@ -156,7 +183,13 @@
         .oi {
             padding-right: 5px;
         }
+
+        textarea {
+            width: 100%;
+            margin-top: 1rem;
+        }
     </style>
+
 </body>
 
 </html>
