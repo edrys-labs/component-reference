@@ -13,7 +13,6 @@
     <title>Edrys Reference Component</title>
 
     <script src="https://edrys-labs.github.io/module/edrys.js"></script>
-
     <script
       defer
       src="https://edrys-labs.github.io/module/vendor/alpine.min.js"
@@ -25,6 +24,18 @@
     <link
       rel="stylesheet"
       href="https://edrys-labs.github.io/module/vendor/open-iconic/css/open-iconic.min.css"
+    />
+
+    <!-- CodeMirror and Yjs dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css"
     />
   </head>
 
@@ -53,10 +64,7 @@
           <li>
             <b>Component Metadata:</b>
             <ul>
-              <li>
-                <b>URL:</b>
-                <code x-text="edrys.module.url"></code>
-              </li>
+              <li><b>URL:</b> <code x-text="edrys.module.url"></code></li>
               <li>
                 <b>Config:</b>
                 <code x-text="JSON.stringify(edrys.module.config)"></code>
@@ -147,6 +155,7 @@
         </div>
 
         <h2>Other Class Data</h2>
+
         The state of the room is represented as an
         <a target="_blank" href="https://docs.yjs.dev/">Yjs</a>
         <a target="_blank" href="https://docs.yjs.dev/api/shared-types/y.map"
@@ -163,46 +172,15 @@
         >
         object, which can be used to share editor states like cursor positions,
         selections, etc.
-        <textarea rows="12" id="code">
-// Add a map and insert two values
-let state = Edrys.getState('name', 'Map')
 
-// These methods performs a transaction, otherwise
-// the onUpdate event would be triggered on every change
-Edrys.updateState(() => {
-    state.set('option', 12)
-    state.set('option2', 13)
-})
-
-// create a sharable awareness state
-let awareness = Edrys.getState("name", "Awareness")
-
-// create a new value, this will return undefined, if this
-// value has not been set before, or return the value itself
-console.log("Get Value =>", Edrys.getState("value", "Value"))
-
-// update or initialize the value directly by passing a new value
-Edrys.getState("value", "Value", 12)
-
-// clear the value
-// Edrys.clearState("id")
-
-// use this to get the entire Map of the room
-let roomState = Edrys.getState()
-console.dir("The Room-State",roomState.toJSON())
-</textarea
-        >
-        <button x-on:click="eval(document.getElementById('code').value)">
-          Eval
-        </button>
+        <div id="editor" x-init="window.initEditor()"></div>
+        <button onclick="evalCode()">Eval</button>
         <hr />
         <h3>Live Rooms</h3>
         <template x-for="[name, data] of Object.entries(edrys.liveClass.rooms)">
           <details>
             <summary x-text="name"></summary>
-            <code>
-              <pre x-text="JSON.stringify(data, null, 2)"></pre>
-            </code>
+            <code><pre x-text="JSON.stringify(data, null, 2)"></pre></code>
           </details>
         </template>
 
@@ -240,10 +218,61 @@ console.dir("The Room-State",roomState.toJSON())
         padding-right: 5px;
       }
 
-      textarea {
-        width: 100%;
+      .CodeMirror {
+        height: 190px;
         margin-top: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
       }
     </style>
+
+    <script>
+      // Initialize CodeMirror and Yjs binding
+      let editor
+
+      window.initEditor = () => {
+        console.warn('Edrys', Edrys)
+        // Initialize CodeMirror
+        editor = CodeMirror(document.getElementById('editor'), {
+          mode: 'javascript',
+          theme: 'monokai',
+          lineNumbers: true,
+          autoCloseBrackets: true,
+          matchBrackets: true,
+          tabSize: 2,
+          value: `// Add a map and insert two values
+let state = Edrys.getState('name', 'Map')
+
+// These methods performs a transaction, otherwise
+// the onUpdate event would be triggered on every change
+Edrys.updateState(() => {
+    state.set('option', 12)
+    state.set('option2', 13)
+})
+
+// create a sharable awareness state
+let awareness = Edrys.getState("name", "Awareness")
+
+// create a new value, this will return undefined, if this
+// value has not been set before, or return the value itself
+console.log("Get Value =>", Edrys.getState("value", "Value"))
+
+// update or initialize the value directly by passing a new value
+Edrys.getState("value", "Value", 12)
+
+// clear the value
+// Edrys.clearState("id")
+
+// use this to get the entire Map of the room
+let roomState = Edrys.getState()
+console.dir("The Room-State",roomState.toJSON())`,
+        })
+      }
+
+      // Eval function for the button
+      function evalCode() {
+        eval(editor.getValue())
+      }
+    </script>
   </body>
 </html>
