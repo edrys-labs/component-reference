@@ -58,7 +58,7 @@
             <code x-text="edrys.liveUser.displayName"></code>
           </li>
           <li>
-            <b>Current Room:</b> <code x-text="edrys.liveRoom.name"></code>
+            <b>Current Room:</b> <code x-text="edrys.liveUser.room"></code>
           </li>
           <li><b>Role:</b> <code x-text="edrys.role"></code></li>
           <li>
@@ -67,24 +67,26 @@
               <li><b>URL:</b> <code x-text="edrys.module.url"></code></li>
               <li>
                 <b>Config:</b>
-                <code x-text="JSON.stringify(edrys.module.config)"></code>
+                <code
+                  x-text="JSON.stringify(edrys.module.config, null, 2)"
+                ></code>
               </li>
               <li x-show="edrys.role == 'student'">
                 <b>Student Config:</b>
                 <code
-                  x-text="JSON.stringify(edrys.module.studentConfig)"
+                  x-text="JSON.stringify(edrys.module.studentConfig, null, 2)"
                 ></code>
               </li>
               <li x-show="edrys.role == 'teacher'">
                 <b>Teacher Config:</b>
                 <code
-                  x-text="JSON.stringify(edrys.module.teacherConfig)"
+                  x-text="JSON.stringify(edrys.module.teacherConfig, null, 2)"
                 ></code>
               </li>
               <li x-show="edrys.role == 'station'">
                 <b>Station Config:</b>
                 <code
-                  x-text="JSON.stringify(edrys.module.stationConfig)"
+                  x-text="JSON.stringify(edrys.module.stationConfig, null, 2)"
                 ></code>
               </li>
               <li>
