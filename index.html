@@ -37,9 +37,20 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css"
     />
+    <script>
+      window.prettyPrintJSON = function (obj, indent = 2) {
+        // First, stringify the object normally to handle all JSON syntax
+        let jsonString = JSON.stringify(obj, null, indent)
+
+        // Then replace escaped newlines with actual newlines while preserving indentation
+        jsonString = jsonString.replace(/\\n/g, '\n' + ' '.repeat(indent + 2))
+
+        return jsonString
+      }
+    </script>
   </head>
 
-  <body>
+  <body style="min-width: calc(100% - 20px)">
     <template
       x-if="!!edrys"
       x-data="{ edrys: undefined }"
@@ -67,26 +78,24 @@
               <li><b>URL:</b> <code x-text="edrys.module.url"></code></li>
               <li>
                 <b>Config:</b>
-                <code
-                  x-text="JSON.stringify(edrys.module.config, null, 2)"
-                ></code>
+                <code x-text="prettyPrintJSON(edrys.module.config)"></code>
               </li>
               <li x-show="edrys.role == 'student'">
                 <b>Student Config:</b>
                 <code
-                  x-text="JSON.stringify(edrys.module.studentConfig, null, 2)"
+                  x-text="prettyPrintJSON(edrys.module.studentConfig)"
                 ></code>
               </li>
               <li x-show="edrys.role == 'teacher'">
                 <b>Teacher Config:</b>
                 <code
-                  x-text="JSON.stringify(edrys.module.teacherConfig, null, 2)"
+                  x-text="prettyPrintJSON(edrys.module.teacherConfig)"
                 ></code>
               </li>
               <li x-show="edrys.role == 'station'">
                 <b>Station Config:</b>
                 <code
-                  x-text="JSON.stringify(edrys.module.stationConfig, null, 2)"
+                  x-text="prettyPrintJSON(edrys.module.stationConfig)"
                 ></code>
               </li>
               <li>
@@ -182,7 +191,7 @@
         <template x-for="[name, data] of Object.entries(edrys.liveClass.rooms)">
           <details>
             <summary x-text="name"></summary>
-            <code><pre x-text="JSON.stringify(data, null, 2)"></pre></code>
+            <code><pre x-text="prettyPrintJSON(data)"></pre></code>
           </details>
         </template>
 
