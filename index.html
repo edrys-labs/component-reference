@@ -111,28 +111,57 @@
         <h3>Send Messages</h3>
 
         <form
-          x-data="{ subject: '' ,message: '' }"
-          x-on:submit.prevent="Edrys.sendMessage(subject, message)"
+          x-data="{subject: '', message: '', recipient: 'all'  }"
+          x-on:submit.prevent="Edrys.sendMessage(subject, message, recipient === 'all' ? undefined : recipient)"
         >
+          <!-- Subject Input -->
           <input
             type="text"
             required
             minlength="1"
             placeholder="Subject"
             x-model="subject"
+            class="mb-2 p-2 border rounded w-full"
+            style="display: inline"
           />
+
+          <!-- Message Body Input -->
           <input
             type="text"
             required
             minlength="1"
             placeholder="Body"
             x-model="message"
+            class="mb-2 p-2 border rounded w-full"
+            style="display: inline"
           />
-          <button type="submit">
+
+          <!-- Recipient Select -->
+          <select
+            x-model="recipient"
+            class="mb-4 p-2 border rounded w-full"
+            style="display: inline"
+          >
+            <!-- Static Option -->
+            <option value="all">to all</option>
+
+            <!-- Dynamic Options from Edrys.users -->
+            <template x-for="user in edrys.liveClass.users" :key="user.name">
+              <option :value="user.name" x-text="user.name"></option>
+            </template>
+          </select>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="px-4 py-2 text-white rounded flex items-center"
+            style="display: block"
+          >
             <span
               class="oi"
               data-glyph="arrow-thick-right"
               aria-hidden="true"
+              class="mr-2"
             ></span>
             Send message
           </button>
@@ -141,7 +170,7 @@
         <h3>Received Messages</h3>
         <div
           x-data="{ messages: [], promiscuous: true }"
-          x-init="Edrys.onMessage((m) => { messages.push(m) }, promiscuous=promiscuous)"
+          x-init="Edrys.onMessage((m) => { messages.unshift(m) }, promiscuous=promiscuous)"
         >
           <em x-show="!messages.length">No messages received yet...</em>
 
